@@ -1,0 +1,50 @@
+﻿Build started 2016-10-12 01:09:14.
+     1>Project "c:\Users\Robs\documents\visual studio 2012\Projects\Asteroids\Asteroids\Asteroids.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         D:\Programy\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         main.cpp
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(17): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(36): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(39): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(55): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(57): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(58): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(59): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(61): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(63): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(67): warning C4305: '=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(95): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(102): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(103): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(104): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(105): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(108): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(109): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(110): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(111): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(114): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(115): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(116): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(117): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(138): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(153): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(159): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(166): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(170): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(181): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(189): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(203): warning C4244: '=' : conversion from 'clock_t' to 'float', possible loss of data
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(206): warning C4305: 'argument' : truncation from 'double' to 'GLclampf'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(280): warning C4305: '=' : truncation from 'double' to 'float'
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(288): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(310): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(382): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\robs\documents\visual studio 2012\projects\asteroids\asteroids\main.cpp(384): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+       Link:
+         D:\Programy\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"c:\users\robs\documents\visual studio 2012\Projects\Asteroids\Debug\Asteroids.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"c:\users\robs\documents\visual studio 2012\Projects\Asteroids\Debug\Asteroids.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"c:\users\robs\documents\visual studio 2012\Projects\Asteroids\Debug\Asteroids.lib" /MACHINE:X86 Debug\main.obj
+         Asteroids.vcxproj -> c:\users\robs\documents\visual studio 2012\Projects\Asteroids\Debug\Asteroids.exe
+     1>Done Building Project "c:\Users\Robs\documents\visual studio 2012\Projects\Asteroids\Asteroids\Asteroids.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:06.48
