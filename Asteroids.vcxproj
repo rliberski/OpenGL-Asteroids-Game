@@ -40,7 +40,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>C:\Users\Robs\Documents\Visual Studio 2012\LIBRARIES\freeglut-2.8.1\lib\x86\Debug;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Users\Robs\Documents\Visual Studio 2012\LIBRARIES\freeglut-2.8.1\include\GL;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Robs\Documents\Visual Studio 2012\LIBRARIES\glm\glm;C:\Users\Robs\Documents\Visual Studio 2012\LIBRARIES\freeglut-2.8.1\include\GL;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -65,7 +65,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Asteroid.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Obj.cpp" />
+    <ClCompile Include="Ship.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Asteroid.h" />
+    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Obj.h" />
+    <ClInclude Include="Ship.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

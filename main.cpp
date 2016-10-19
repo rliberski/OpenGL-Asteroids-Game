@@ -1,247 +1,116 @@
+#include "Ship.h"
+#include "Bullet.h" 
+#include "Asteroid.h"
+
 #include <glut.h>
 #include <ctime>
 #include <list>
 #include <string>
-#include <random>
 #include <cmath>
 
-// klawisze
-GLboolean leftPressed = false;
-GLboolean rightPressed = false;
-// przesuniêcie i obrót statku
-GLfloat rotateShip = 0.0;
-GLfloat translateShip = 0.0;
 
-//punkty
+std::list<Bullet*> bullets;		//active bullets
+std::list<Asteroid*> asteroids;	//active asteroids
+Obj *asteroidObject = new Obj("asteroidModel.obj");	//one model for all asteroids, so it is loaded here
+//Obj *bulletObject = new Obj("bulletModel.obj");		//one model for all bullets, so it is loaded here
+Ship* m_ship = new Ship();		//main ship
+
+//steering keys
+bool leftPressed = false;
+bool rightPressed = false;
+
+//score, difficulty
 int score = 0;
-float asteroidSpeed = 0.01;
-
-//czas
+float asteroidSpeed = 1.0;
 float spawnTime = 1.0;
-float frameTime = 0.0;
-float startFrame = 0.0;
-float endFrame = 0.0;
 
-//losowoœæ
- std::random_device rd;
- std::mt19937 eng(rd());
- std::uniform_real_distribution<> dist(-0.9, 0.9); //pozycja startowa asteroidu i si³a obrotu
- std::uniform_real_distribution<> dist2(0.5, 1.5); //skala asteroidu
- std::uniform_real_distribution<> dist3(-0.003,0.003); //przesuniêcie podczas spadania
+//time
+float toSpawn = 0.0;		//time to spawn asteroid
+float startFrame = 0.0;		//start frame time
+float endFrame = 0.0;		//end frame time
+int framesPerSec = 0;		//frames per sec
+int frames = 0;				//actual frames
+float oneSec;				//one second counter
 
-//pociski
-class Bullet
+//drawing functions (used in display function)
+void drawScore()		//drawing score and update window title (FPS)
 {
-public:
-	Bullet(GLfloat pos) : posx(pos), posy(-0.7), active(true) {}
-	void moveBullet() 
-	{ 
-		posy+=0.05;
-		if(posy>0.99) active = false;
-	}
+	glColor3f(1.0f,1.0f,1.0f);			//white
+    glRasterPos3f(-0.9f,-0.9f,0.0f);	//position
 
-	GLfloat posx;
-	GLfloat posy;
-	bool active;
-};
-std::list<Bullet*> bullets;
-//asteroidy
-class Asteroid
-{
-public:
-	Asteroid()
-	{
-		//startuj z:
-		startXPoint = dist(eng);
-		//si³a obrotu:
-		rotateX = dist(eng);
-		rotateY = dist(eng);
-		rotateZ = dist(eng);
-		//skalowanie
-		scale = dist2(eng);
-		//przesuniecie
-		translate = dist3(eng);
-
-		//ustal pozycjê startow¹
-		posx = startXPoint;
-		posy = 1.3;
-		rotateAngle=0;
-		active = true;
-	}
-	void moveAsteroid()
-	{
-		posy-=asteroidSpeed;
-		posx+=translate;
-		rotateAngle+=5;
-		if(posy<-1.3) active = false;
-	}
-	GLfloat startXPoint;
-	GLfloat posx;
-	GLfloat posy;
-	bool active;
-	GLfloat scale;
-	GLfloat translate;
-	GLfloat rotateAngle;
-	GLfloat rotateX;
-	GLfloat rotateY;
-	GLfloat rotateZ;
-};
-std::list<Asteroid*> asteroids;
-
-void drawShip()
-{
-	glPushMatrix();
-
-	glTranslatef(translateShip, -0.90, 0.0);
-	glScalef(0.5, 0.5, 0.5);
-	glRotatef(rotateShip, 0, 1.0, 0);
-
-	glColor3f(1.0, 1.0, 1.0);
-
-	glBegin(GL_LINES);
-	glVertex3f(0.0, 0.2, 0.02); glVertex3f(-0.05, 0.125, 0.02);
-	glVertex3f(-0.05, 0.125, 0.02); glVertex3f(0.0, 0.1, 0.02);
-	glVertex3f(0.0, 0.1, 0.02); glVertex3f(0.05, 0.125, 0.02);
-	glVertex3f(0.0, 0.2, 0.02); glVertex3f(0.05, 0.125, 0.02);
-	glEnd();
-	glBegin(GL_LINES);
-	glVertex3f(0.0, 0.2, -0.02); glVertex3f(-0.05, 0.125, -0.02);
-	glVertex3f(-0.05, 0.125, -0.02); glVertex3f(0.0, 0.1, -0.02);
-	glVertex3f(0.0, 0.1, -0.02); glVertex3f(0.05, 0.125, -0.02);
-	glVertex3f(0.0, 0.2, -0.02); glVertex3f(0.05, 0.125, -0.02);
-	glEnd();
-	glBegin(GL_LINES);
-	glVertex3f(0.0, 0.2, 0.02); glVertex3f(0.0, 0.2, 0.02);
-	glVertex3f(-0.05, 0.125, 0.02); glVertex3f(-0.05, 0.125, 0.02);
-	glVertex3f(0.0, 0.1, 0.02); glVertex3f(0.0, 0.1, -0.02); 
-	glVertex3f(0.05, 0.125, -0.02); glVertex3f(0.05, 0.125, -0.02);
-	glEnd();
-	
-	glPopMatrix();
-}
-void drawBullets()
-{
-	// zolty
-	glColor3f(1.0, 1.0, 0.0);
-
-	for(Bullet* bullet : bullets)
-	{
-		glPushMatrix();
-		glTranslatef(bullet->posx, bullet->posy, 0.0);
-		glutSolidCube(0.01);
-		glPopMatrix();
-	}
-}
-void drawAsteroids()
-{
-	// brazowy
-	glColor3f(0.6, 0.6, 0.2);
-
-	for(Asteroid* asteroid : asteroids)
-	{
-		glPushMatrix();
-		glTranslatef(asteroid->posx, asteroid->posy, 0.0);
-		glScalef(asteroid->scale, asteroid->scale, asteroid->scale);
-		glRotatef(asteroid->rotateAngle,asteroid->rotateX,asteroid->rotateY,asteroid->rotateZ);
-		glutWireCube(0.1);
-		glPopMatrix();
-	}
-}
-void drawScore()
-{
-	glColor3f(1.0,1.0,1.0);
-    glRasterPos3f(-0.9,-0.9,0.0);
-
+	//draw score
 	std::string scoreText = "Score: ";
 	std::string scoreStr;
-	if(score == -1)
-	{
-		glColor3f(1.0,0.2,0.2);
-		scoreText = "";
-		scoreStr = "GAME OVER";
-	}
-	else
-		scoreStr=std::to_string(score);
-
-	for (int i=0; i<scoreText.length(); i++) 
+	scoreStr=std::to_string(score);
+	for (unsigned int i=0; i<scoreText.length(); i++) 
 	{
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, scoreText[i]);
     }
-	for (int i=0; i<scoreStr.length(); i++) 
+	for (unsigned int i=0; i<scoreStr.length(); i++) 
 	{
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, scoreStr[i]);
     }
-}
 
-void turnLeft()
+	//update FPS
+	std::string frameStr = "Asteroids - FPS: " + std::to_string(framesPerSec);
+	glutSetWindowTitle(frameStr.c_str());
+}
+void updateObjects()
 {
-	if (rotateShip > -55)
-		rotateShip -= 5;
-	if (translateShip > -0.95)
-		translateShip -= 0.02;
+	//update and draw bullets
+	for(Bullet* bullet : bullets)
+	{
+		bullet->moveBullet(endFrame / CLOCKS_PER_SEC);
+		bullet->drawBullet();
+	}
 
-}
-void turnRight()
-{
-	if (rotateShip < 55)
-		rotateShip += 5;
-	if(translateShip < 0.95)
-		translateShip +=0.02;
-}
-void shoot()
-{
-	bullets.push_front(new Bullet(translateShip));
-}
-void createAsteroid()
-{
-	asteroids.push_front(new Asteroid());
-}
+	//update and draw asteroids
+	for(Asteroid* asteroid : asteroids)
+	{
+		asteroid->moveAsteroid(asteroidSpeed, endFrame / CLOCKS_PER_SEC);
+		asteroid->drawAsteroid(asteroidObject);
+	}
 
+	//draw ship
+	m_ship->drawShip();
+
+	//draw score
+	drawScore();
+}
+//end of drawing functions
+
+//opengl functions
 void Display()
 {
-	Sleep(1);
-	startFrame = clock();
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);	//background (almost black)
 
-	// kolor t³a - zawartoœæ bufora koloru
-	glClearColor(0.1, 0.1, 0.1, 1.0);
-	// czyszczenie bufora koloru
+	//prepare
 	glClear(GL_COLOR_BUFFER_BIT);
-	// wybór macierzy modelowania
 	glMatrixMode(GL_MODELVIEW);
-	// macierz modelowania = macierz jednostkowa
-	glLoadIdentity();
+	glLoadIdentity();					
 
-	// rysowanie
-	drawShip();
-	drawBullets();
-	drawAsteroids();
+	//drawing
+	updateObjects();
 	drawScore();
 
-	// skierowanie poleceñ do wykonania
+	//finish
 	glFlush();
-	// zamiana buforów koloru
 	glutSwapBuffers();
-	endFrame = clock() - startFrame;
 }
 void Reshape(int width, int height)
 {
-	// obszar renderingu - ca³e okno
 	glViewport(0, 0, width, height);	
-
-	// generowanie sceny 3D
 	Display();
 }
-
 void Keyboard(unsigned char key, int x, int y)
 {
-	// klawisz +
+	//shooting
 	if (key == ' ')
-		shoot();
-	// odrysowanie okna
-	Reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+		bullets.push_front(new Bullet(m_ship->getTranslate()));
 }
 void SpecialKeys(int key, int x, int y)
 {
+	//steering (keys down)
 	if (key == GLUT_KEY_LEFT)
 		leftPressed = true;
 	if (key == GLUT_KEY_RIGHT)
@@ -249,14 +118,18 @@ void SpecialKeys(int key, int x, int y)
 }
 void SpecialKeysUp(int key, int x, int y)
 {
+	//steering (keys up)
 	if (key == GLUT_KEY_LEFT)
 		leftPressed = false;
 	if (key == GLUT_KEY_RIGHT)
 		rightPressed = false;
 }
+//end of opengl functions
 
-void reset()
+//collision functions
+void reset()	//reset game if ship collide with asteroid
 {
+	//delete bullets and asteroids
 	std::list<Bullet*>::iterator b = bullets.begin();
 	while(b != bullets.end())
 	{
@@ -274,27 +147,30 @@ void reset()
 	asteroids.clear();
 	bullets.clear();
 
-	rotateShip = 0.0;
-	translateShip = 0.0;
+	//delete ship and create new
+	m_ship->reset();
+
+	//reset score and difficulty values
 	score = 0;
-	asteroidSpeed = 0.01;
+	asteroidSpeed = 1.0;
 	spawnTime = 1.0;
 }
-bool bulletCollision()
+bool bulletCollision()	//bullets with asteroids collision
 {
 	std::list<Asteroid*>::iterator a = asteroids.begin();
 	while(a!=asteroids.end())
 	{
-		float AsteroidSphere = (((*a)->scale * 0.1) * sqrt(3))/2;
+		float AsteroidSphere = (*a)->getRadius();
 		std::list<Bullet*>::iterator b = bullets.begin();
 		while(b!=bullets.end())
-		{
-			float distance = sqrt((((*a)->posx-(*b)->posx)*((*a)->posx-(*b)->posx))+(((*a)->posy-(*b)->posy)*((*a)->posy-(*b)->posy)));
-			//jeœli koliduje to ustaw jako nieaktywne
+		{	
+			//it's just euclidean distance (2D, 'Z' Axis is 0)
+			float distance = sqrt((((*a)->getX()-(*b)->getX())*((*a)->getX() -(*b)->getX()))+(((*a)->getY() -(*b)->getY())*((*a)->getY() -(*b)->getY())));
+			//if collide set as unactive (it will be deleted in "deleteOutOfBorders" function)
 			if(distance < AsteroidSphere)
 			{
-				(*a)->active = false;
-				(*b)->active = false;
+				(*a)->setActive(false);
+				(*b)->setActive(false);
 				return true;
 			}
 			b++;
@@ -303,49 +179,42 @@ bool bulletCollision()
 	}
 	return false;
 }
-bool shipCollision()
+bool shipCollision() //ship with asteroids collision
 {
 	for(Asteroid* asteroid : asteroids)
 	{
-		float sphere = asteroid->scale * 0.1 * (sqrt(3)/2);
-		if(asteroid->posy - sphere < -0.85 && asteroid->posy + sphere > -0.90 )
+		float sphere = asteroid->getRadius();
+		if(asteroid->getY() - sphere < -0.80 && asteroid->getY() + sphere > -0.85 )
 		{
-			if(asteroid->posx < translateShip + 0.03 && asteroid->posx > translateShip -0.03)
+			if(asteroid->getX() < m_ship->getTranslate() + 0.07 && asteroid->getX() > m_ship->getTranslate()  -0.07)
 			{
 				score = -1;
-				Display();
-				Sleep(2000);
+				Sleep(1000);
 				return true;
 			}
 		}
 	}
 	return false;
 }
+//end of collision functions
 
-void Loop()
+//Loop functions
+void updateShip()	//update ship position and rotation
 {
-	//sterowanie statkiem
 	if(leftPressed)
-		turnLeft();
+		m_ship->turnLeft(endFrame / CLOCKS_PER_SEC);
 	if(rightPressed)
-		turnRight();
-	//powrót do pozycji wyjœciowej (obrót statku)
+		m_ship->turnRight(endFrame / CLOCKS_PER_SEC);
 	if (!leftPressed && !rightPressed)
-	{
-		if (rotateShip < -5)
-			rotateShip += 5;
-		else if (rotateShip > 5)
-			rotateShip -= 5;
-		else
-			rotateShip = 0.0;
-	}
-	//przesuñ pociski i usuñ te, które wysz³y poza ekran
+		m_ship->rotateBack(endFrame / CLOCKS_PER_SEC);
+}
+void deleteOutOfBorders()//delete unactive bullets and asteroids
+{
 	std::list<Bullet*>::iterator it = bullets.begin();
 	while(it != bullets.end())
 	{
-		if((*it)->active)
+		if((*it)->isActive())
 		{
-			(*it)->moveBullet();
 			++it;
 		}
 		else
@@ -355,13 +224,11 @@ void Loop()
 			delete deleteThis;
 		}
 	}
-	//przesuñ asteroidy i usuñ te, które wysz³y poza ekran
 	std::list<Asteroid*>::iterator itt = asteroids.begin();
 	while(itt != asteroids.end())
 	{
-		if((*itt)->active)
+		if((*itt)->isActive())
 		{
-			(*itt)->moveAsteroid();
 			++itt;
 		}
 		else
@@ -371,55 +238,70 @@ void Loop()
 			delete deleteThis;
 		}
 	}
-	//odmierz czas klatki i stwórz asteroid jeœli min¹³ okreœlony czas
-	frameTime += endFrame / CLOCKS_PER_SEC;
-	if(frameTime > spawnTime) 
+}
+void spawnAsteroids()	//generate asteroids
+{
+	toSpawn += endFrame / CLOCKS_PER_SEC;
+	if(toSpawn > spawnTime) 
 	{
-		frameTime = 0.0;
-		createAsteroid();
+		toSpawn = 0.0f;
+		asteroids.push_front(new Asteroid()); //create asteroid
 	}
-	//dostosuj prêdkoœæ asteroidów oraz czêstotliwoœæ tworzenia ich
-	asteroidSpeed = 0.01 + (score/1000);
-	if(spawnTime > 0.01)
-		spawnTime = 1.0 - (score/100.0); 
-	//usuñ zestrzelone asteroidy
-	if(bulletCollision()) score++;
-	if(shipCollision()) reset();
+}
+void checkCollision() //update game state
+{
+	if(bulletCollision()) 
+	{
+		score++;
+		asteroidSpeed = 1.0f + (score/200.0f);
+		if(spawnTime > 0.01)
+			spawnTime = 1.0f /score*3.0f;///100.0f); 
+	}
 
-	Reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+	//if(shipCollision()) reset();
+}
+//end of loop functions
+
+//main loop: count framerate and update game
+void Loop()
+{
+	startFrame = (float)clock();	//start frame time
+
+	updateShip();   //steering
+	deleteOutOfBorders();  //delete bullets and asteroids out of screen
+	spawnAsteroids();  //generate asteroids
+	checkCollision();  //check collisions and update game state
+	Reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT)); //refresh
+
+	endFrame = clock() - startFrame;	//one frame time
+
+	//count fps
+	oneSec += endFrame;
+	frames++;
+	if (oneSec >= CLOCKS_PER_SEC)
+	{
+		framesPerSec = frames;
+		frames = 0;
+		oneSec = 0.0;
+	}
 }
 
+//initialize
 int main(int argc, char * argv[])
 {
-	// inicjalizacja biblioteki GLUT
 	glutInit(&argc, argv);
-
-	// inicjalizacja bufora ramki
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-
-	// rozmiary g³ównego okna programu
 	glutInitWindowSize(800, 600);
+	glutCreateWindow("Asteroids");
 
-	// utworzenie g³ównego okna programu
-	glutCreateWindow("Asteroidy");
-
-	// do³¹czenie funkcji generuj¹cej scenê 3D
 	glutDisplayFunc(Display);
-
-	// do³¹czenie funkcji wywo³ywanej przy zmianie rozmiaru okna
 	glutReshapeFunc(Reshape);
-
-	// do³¹czenie funkcji obs³ugi klawiatury
 	glutKeyboardFunc(Keyboard);
-
-	// do³¹czenie funkcji obs³ugi klawiszy funkcyjnych i klawiszy kursora
 	glutSpecialFunc(SpecialKeys);
 	glutSpecialUpFunc(SpecialKeysUp);
 
-	// pêtla
 	glutIdleFunc(Loop);
-
-	// wprowadzenie programu do obs³ugi pêtli komunikatów
 	glutMainLoop();
+
 	return 0;
 }
