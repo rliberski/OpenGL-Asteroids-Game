@@ -5,17 +5,18 @@ Simple Asteroids Game (Work in progress)
 
 #Alpha version
 Done:
-- Simple wireframe models
 - Steering
 - Shooting
 - Generating asteroids
 - Collision bullets with asteroids
 - Simple collision ship with asteroids
 - Counting score
+- Wavefront Obj files loader
+- Simple models (untextured)
 
 Todo:
-- Better ship collision
-- Better models
+- Textures 
+- Collisions
 - Shaders
 - Space?
 - FX? 
