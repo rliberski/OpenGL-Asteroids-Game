@@ -21,3 +21,8 @@ Todo:
 - Space?
 - FX? 
 - Code organize
+
+Used libraries:
+- freeglut
+- glm (OpenGL Mathematics)
+- soil (Simple OpenGL Image Library)
